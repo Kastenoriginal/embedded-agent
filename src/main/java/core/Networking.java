@@ -43,7 +43,7 @@ public class Networking {
 				while (true) {
 					try {
 						Socket client = server.accept();
-//						client.setSoTimeout(6000000);
+						client.setSoTimeout(6000000);
 						out = new PrintWriter(client.getOutputStream(), true);
 						in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 						System.out.println("Client connected.");
@@ -134,11 +134,10 @@ public class Networking {
 
 		String[] pinTypes = piMap.getValueByKey(Integer.valueOf(parser.getPinNumber()));
 		System.out.println("COMMAND FROM CLIENT: " + input);
-		System.out.println("PIN TYPE FROM COMMAND IS: " + parser.getPinType());
 		if (parser.getPinType().equals("GPIO")) {
-			System.out.println("Value from GUI to pin " + parser.getPinNumber() + ": " + parser.getValue());
+			System.out.println("Value from GPIO to pin " + parser.getPinNumber() + " set to: " + gpio.toggleLed(board, pinTypes[0]));
+			// TODO: 20.8.2016 repair out.println
 			out.println("Value on GPIO pin " + parser.getPinNumber() + " set to: " + gpio.toggleLed(board, pinTypes[0]));
-            // TODO: 20.8.2016 out.println that gpio has successfully set to value
         } else if (parser.getPinType().equals("I2C")) {
 			System.out.println("Pin type is I2C");
 			String hexAddress = parser.getValue().substring(0, 4);

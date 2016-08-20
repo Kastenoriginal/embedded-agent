@@ -32,9 +32,11 @@ public class GpioManager {
 		DigitalOutput output = board.getPin(pin).as(DigitalOutput.class);
 		if (output.isLow()) {
 			output.high();
+			System.out.println("SENT SHOULD BE 1");
 			return 1;
 		} else {
 			output.low();
+			System.out.println("SENT SHOULD BE 0");
 			return 0;
 		}
 	}
