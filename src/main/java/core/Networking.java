@@ -141,8 +141,9 @@ public class Networking {
 		System.out.println("Do if vetvy typ: " + parser.getPinType());
 		if (parser.getPinType().equals("GPIO")) {
 			GpioManager gpio = new GpioManager();
-			System.out.println("Value from GPIO to pin " + parser.getPinNumber() + " set to: " + gpio.toggleLed(board, pinTypes[0]));
-			out.println("Value on GPIO pin " + parser.getPinNumber() + " set to: " + gpio.toggleLed(board, pinTypes[0]));
+			int setValue =  gpio.toggleLed(board, pinTypes[0]);
+			System.out.println("Value from GPIO to pin " + parser.getPinNumber() + " set to: " + setValue);
+			out.println("Value on GPIO pin " + parser.getPinNumber() + " set to: " + setValue);
         } else if (parser.getPinType().equals("I2C")) {
 			System.out.println("Pin type is I2C");
 			String hexAddress = parser.getValue().substring(0, 4);
