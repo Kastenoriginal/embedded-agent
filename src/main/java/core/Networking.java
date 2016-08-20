@@ -43,6 +43,7 @@ public class Networking {
 				while (true) {
 					try {
 						Socket client = server.accept();
+//						client.setSoTimeout(6000000);
 						out = new PrintWriter(client.getOutputStream(), true);
 						in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 						System.out.println("Client connected.");
