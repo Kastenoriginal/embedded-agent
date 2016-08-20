@@ -134,6 +134,7 @@ public class Networking {
 
 		String[] pinTypes = piMap.getValueByKey(Integer.valueOf(parser.getPinNumber()));
 		System.out.println("COMMAND FROM CLIENT: " + input);
+		System.out.println("Do if vetvy typ: " + parser.getPinType());
 		if (parser.getPinType().equals("GPIO")) {
 			System.out.println("Value from GPIO to pin " + parser.getPinNumber() + " set to: " + gpio.toggleLed(board, pinTypes[0]));
 			// TODO: 20.8.2016 repair out.println
