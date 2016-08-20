@@ -80,6 +80,9 @@ public class Networking {
 		RequestedPinsParser pinParser = new RequestedPinsParser(input.substring(25));
 		List<String> pinsToSend = pinParser.getPinsToSend();
 		System.out.println("Pins to Send to client: " + pinsToSend);
+		System.out.println(pinsToSend != null);
+		System.out.println(!pinsToSend.isEmpty());
+		System.out.println(pinsToSend != null && !pinsToSend.isEmpty());
 		if (pinsToSend != null && !pinsToSend.isEmpty()) {
 			for (String pinNumberString : pinsToSend) {
 				Integer pinNumberInt = Integer.valueOf(pinNumberString);
