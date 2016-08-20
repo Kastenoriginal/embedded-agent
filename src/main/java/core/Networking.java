@@ -4,6 +4,9 @@ import hashmaps.RaspberryHashMap;
 import io.silverspoon.bulldog.core.gpio.DigitalIO;
 import io.silverspoon.bulldog.core.pin.Pin;
 import io.silverspoon.bulldog.core.platform.Board;
+import managers.GpioManager;
+import managers.I2CManager;
+import managers.SPIManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,12 +16,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
-
-import managers.GpioManager;
-import managers.I2CManager;
-import managers.SPIManager;
 
 public class Networking {
 
@@ -78,7 +77,7 @@ public class Networking {
 	private void sendAllPinStatus(String input) {
 		out.print("START;");
 		RequestedPinsParser pinParser = new RequestedPinsParser(input.substring(25));
-		List<String> pinsToSend = pinParser.getPinsToSend();
+		ArrayList<String> pinsToSend = pinParser.getPinsToSend();
 		System.out.println("Pins to Send to client: " + pinsToSend);
 		System.out.println(pinsToSend != null);
 		System.out.println(!pinsToSend.isEmpty());
