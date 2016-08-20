@@ -14,6 +14,7 @@ import java.net.Socket;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 
 import managers.GpioManager;
 import managers.I2CManager;
@@ -77,42 +78,45 @@ public class Networking {
 	private void sendAllPinStatus(String input) {
 		out.print("START;");
 		RequestedPinsParser pinParser = new RequestedPinsParser(input.substring(25));
-		System.out.println("Pins to Send to client: " + pinParser.getPinsToSend());
-		for (String pinNumberString : pinParser.getPinsToSend()) {
-			Integer pinNumberInt = Integer.valueOf(pinNumberString);
-			if (pinNumberString.length() == 1) {
-				pinNumberString = "0" + pinNumberString;
-			}
-			Pin physicalPin = null;
-			for (Pin p : board.getPins()) {
-				if (p.getIndexOnPort() == pinNumberInt) {
-					physicalPin = p;
+		List<String> pinsToSend = pinParser.getPinsToSend();
+		System.out.println("Pins to Send to client: " + pinsToSend);
+		if (pinsToSend != null && !pinsToSend.isEmpty()) {
+			for (String pinNumberString : pinsToSend) {
+				Integer pinNumberInt = Integer.valueOf(pinNumberString);
+				if (pinNumberString.length() == 1) {
+					pinNumberString = "0" + pinNumberString;
+				}
+				Pin physicalPin = null;
+				for (Pin p : board.getPins()) {
+					if (p.getIndexOnPort() == pinNumberInt) {
+						physicalPin = p;
+					}
+				}
+				if (physicalPin != null) {
+					DigitalIO digitalIO = physicalPin.as(DigitalIO.class);
+					if (digitalIO.isOutputActive()) {
+						if (digitalIO.isHigh()) {
+							System.out.println("SENDING 1");
+							out.print(getDateAndTime() + getPinType(digitalIO) + ":O" + pinNumberString + HIGH_VALUE + ";");
+						} else {
+							System.out.println("SENDING 2");
+							out.print(getDateAndTime() + getPinType(digitalIO) + ":O" + pinNumberString + LOW_VALUE + ";");
+						}
+					} else if (digitalIO.isInputActive()) {
+						if (digitalIO.isHigh()) {
+							System.out.println("SENDING 3");
+							out.print(getDateAndTime() + getPinType(digitalIO) + ":I" + pinNumberString + HIGH_VALUE + ";");
+						} else {
+							System.out.println("SENDING 4");
+							out.print(getDateAndTime() + getPinType(digitalIO) + ":I" + pinNumberString + LOW_VALUE + ";");
+						}
+					} else {
+						System.out.println("Neposlalo sa nic");
+					}
 				}
 			}
-			if (physicalPin != null) {
-				DigitalIO digitalIO = physicalPin.as(DigitalIO.class);
-				if (digitalIO.isOutputActive()) {
-					if (digitalIO.isHigh()) {
-						System.out.println("SENDING 1");
-						out.print(getDateAndTime() + getPinType(digitalIO) + ":O" + pinNumberString + HIGH_VALUE + ";");
-					} else {
-						System.out.println("SENDING 2");
-						out.print(getDateAndTime() + getPinType(digitalIO) + ":O" + pinNumberString + LOW_VALUE + ";");
-					}
-				} else if (digitalIO.isInputActive()) {
-					if (digitalIO.isHigh()) {
-						System.out.println("SENDING 3");
-						out.print(getDateAndTime() + getPinType(digitalIO) + ":I" + pinNumberString + HIGH_VALUE + ";");
-					} else {
-						System.out.println("SENDING 4");
-						out.print(getDateAndTime() + getPinType(digitalIO) + ":I" + pinNumberString + LOW_VALUE + ";");
-					}
-				} else {
-					System.out.println("Neposlalo sa nic");
-				}
-			}
+			out.println("END");
 		}
-		out.println("END");
 	}
 
 	private void sendParsedData(String input) {
