@@ -204,8 +204,10 @@ public class Networking {
 		if (input.length() > 15
 				&& (input.contains("GPIO:") || input.contains("SPI:") || input.contains("I2C:") || input
 						.contains("UART:"))) {
+			System.out.println("IS embedded command");
 			return true;
 		} else {
+			System.out.println("IS NOT embedded command");
 			return false;
 		}
 	}
