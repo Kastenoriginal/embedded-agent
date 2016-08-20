@@ -138,7 +138,6 @@ public class Networking {
 
 		String[] pinTypes = piMap.getValueByKey(Integer.valueOf(parser.getPinNumber()));
 		System.out.println("COMMAND FROM CLIENT: " + input);
-		System.out.println("Do if vetvy typ: " + parser.getPinType());
 		if (parser.getPinType().equals("GPIO")) {
 			GpioManager gpio = new GpioManager();
 			int setValue =  gpio.toggleLed(board, pinTypes[0]);
@@ -146,8 +145,10 @@ public class Networking {
 			out.println("Value on GPIO pin " + parser.getPinNumber() + " set to: " + setValue);
         } else if (parser.getPinType().equals("I2C")) {
 			System.out.println("Pin type is I2C");
-			String hexAddress = parser.getValue().substring(0, 2);
-			String message = parser.getValue().substring(2);
+			String hexAddress = parser.getValue().substring(0, 4);
+			String message = parser.getValue().substring(4);
+			System.out.println("hexa address: " + hexAddress);
+			System.out.println("message " + message);
 			I2CManager i2c = new I2CManager(board, hexAddress);
 			try {
 				i2c.sendI2CMessage(message);
@@ -159,8 +160,8 @@ public class Networking {
 			}
 		} else if (parser.getPinType().equals("SPI")) {
             System.out.println("Pin type is SPI. SPI bus is not supported yet.");
-            String hexAddress = parser.getValue().substring(0, 2);
-            String message = parser.getValue().substring(2);
+            String hexAddress = parser.getValue().substring(0, 4);
+            String message = parser.getValue().substring(4);
             SPIManager spi = new SPIManager(board, hexAddress);
 
             try {
