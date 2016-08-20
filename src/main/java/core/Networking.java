@@ -56,7 +56,7 @@ public class Networking {
 								out.println("disconnected from server.");
 							} else if (!(input.equals("Connect") || input.equals("Disconnect")) && connected) {
 								if (isEmbeddedCommand(input)) {
-									sendParsedData(input);
+//									sendParsedData(input);
 									manageCommand(input);
 								} else if (isRequestToSendAll(input)) {
 									sendAllPinStatus(input);
@@ -125,26 +125,23 @@ public class Networking {
 	private void sendParsedData(String input) {
 		String separator = "|";
 		RequestParser parser = new RequestParser(input);
-//		parser.parseRequest(input);
 		out.println("Day:" + parser.getDay() + separator + "Month:" + parser.getMonth() + separator + "Year:"
 				+ parser.getYear() + separator + "Hour:" + parser.getHour() + separator + "Minute:"
-				+ parser.getMinute() + separator + "Second:" + parser.getSecond() + separator + "Pin Type:"
-				+ parser.getPinType() + separator + "Pin Number:" + parser.getPinNumber() + separator + "Value:"
-				+ parser.getValue());
+				+ parser.getMinute() + separator + "Second:" + parser.getSecond() + separator + "I/O Type:"
+				+ parser.getIoType() + separator + "Pin Type:" + parser.getPinType() + separator + "Pin Number:"
+				+ parser.getPinNumber() + separator + "Value:" + parser.getValue());
 	}
 
 	private void manageCommand(String input) {
 		RequestParser parser = new RequestParser(input);
-//		parser.parseRequest(input);
 
-		GpioManager gpio = new GpioManager();
 
 		String[] pinTypes = piMap.getValueByKey(Integer.valueOf(parser.getPinNumber()));
 		System.out.println("COMMAND FROM CLIENT: " + input);
 		System.out.println("Do if vetvy typ: " + parser.getPinType());
 		if (parser.getPinType().equals("GPIO")) {
+			GpioManager gpio = new GpioManager();
 			System.out.println("Value from GPIO to pin " + parser.getPinNumber() + " set to: " + gpio.toggleLed(board, pinTypes[0]));
-			// TODO: 20.8.2016 repair out.println
 			out.println("Value on GPIO pin " + parser.getPinNumber() + " set to: " + gpio.toggleLed(board, pinTypes[0]));
         } else if (parser.getPinType().equals("I2C")) {
 			System.out.println("Pin type is I2C");
@@ -175,6 +172,8 @@ public class Networking {
             }
         } else if (parser.getPinType().equals("UART")) {
 			System.out.println("Pin type is UART. UART bus is not supported yet.");
+		} else {
+			out.println("Command not recognized");
 		}
 	}
 
@@ -204,10 +203,10 @@ public class Networking {
 		if (input.length() > 15
 				&& (input.contains("GPIO:") || input.contains("SPI:") || input.contains("I2C:") || input
 						.contains("UART:"))) {
-			System.out.println("IS embedded command");
+			System.out.println(input + " :IS embedded command");
 			return true;
 		} else {
-			System.out.println("IS NOT embedded command");
+			System.out.println(input + " :IS NOT embedded command");
 			return false;
 		}
 	}
