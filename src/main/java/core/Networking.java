@@ -79,42 +79,43 @@ public class Networking {
 		RequestedPinsParser pinParser = new RequestedPinsParser(input.substring(25));
 		ArrayList<String> pinsToSend = pinParser.getPinsToSend();
 		System.out.println("Pins to Send to client: " + pinsToSend);
-		System.out.println(pinsToSend != null);
-		System.out.println(!pinsToSend.isEmpty());
-		System.out.println(pinsToSend != null && !pinsToSend.isEmpty());
 		if (pinsToSend != null && !pinsToSend.isEmpty()) {
 			for (String pinNumberString : pinsToSend) {
-				Integer pinNumberInt = Integer.valueOf(pinNumberString);
-				if (pinNumberString.length() == 1) {
-					pinNumberString = "0" + pinNumberString;
-				}
-				Pin physicalPin = null;
-				for (Pin p : board.getPins()) {
-					if (p.getIndexOnPort() == pinNumberInt) {
-						physicalPin = p;
+				System.out.println(!pinNumberString.isEmpty());
+				if (!pinNumberString.isEmpty()) {
+					Integer pinNumberInt = Integer.valueOf(pinNumberString);
+					if (pinNumberString.length() == 1) {
+						pinNumberString = "0" + pinNumberString;
 					}
-				}
-				if (physicalPin != null) {
-					DigitalIO digitalIO = physicalPin.as(DigitalIO.class);
-					if (digitalIO.isOutputActive()) {
-						if (digitalIO.isHigh()) {
-							System.out.println("SENDING 1");
-							out.print(getDateAndTime() + getPinType(digitalIO) + ":O" + pinNumberString + HIGH_VALUE + ";");
-						} else {
-							System.out.println("SENDING 2");
-							out.print(getDateAndTime() + getPinType(digitalIO) + ":O" + pinNumberString + LOW_VALUE + ";");
+					Pin physicalPin = null;
+					for (Pin p : board.getPins()) {
+						if (p.getIndexOnPort() == pinNumberInt) {
+							physicalPin = p;
 						}
-					} else if (digitalIO.isInputActive()) {
-						if (digitalIO.isHigh()) {
-							System.out.println("SENDING 3");
-							out.print(getDateAndTime() + getPinType(digitalIO) + ":I" + pinNumberString + HIGH_VALUE + ";");
-						} else {
-							System.out.println("SENDING 4");
-							out.print(getDateAndTime() + getPinType(digitalIO) + ":I" + pinNumberString + LOW_VALUE + ";");
-						}
-					} else {
-						System.out.println("Neposlalo sa nic");
 					}
+					if (physicalPin != null) {
+						DigitalIO digitalIO = physicalPin.as(DigitalIO.class);
+						if (digitalIO.isOutputActive()) {
+							if (digitalIO.isHigh()) {
+								System.out.println("SENDING 1");
+								out.print(getDateAndTime() + getPinType(digitalIO) + ":O" + pinNumberString + HIGH_VALUE + ";");
+							} else {
+								System.out.println("SENDING 2");
+								out.print(getDateAndTime() + getPinType(digitalIO) + ":O" + pinNumberString + LOW_VALUE + ";");
+							}
+						} else if (digitalIO.isInputActive()) {
+							if (digitalIO.isHigh()) {
+								System.out.println("SENDING 3");
+								out.print(getDateAndTime() + getPinType(digitalIO) + ":I" + pinNumberString + HIGH_VALUE + ";");
+							} else {
+								System.out.println("SENDING 4");
+								out.print(getDateAndTime() + getPinType(digitalIO) + ":I" + pinNumberString + LOW_VALUE + ";");
+							}
+						} else {
+							System.out.println("Neposlalo sa nic");
+						}
+					}
+
 				}
 			}
 			out.println("END");
