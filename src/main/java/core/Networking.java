@@ -176,7 +176,9 @@ public class Networking {
 			} else {
 				out.println("Command not recognized");
 			}
-		}
+		} else {
+            System.out.println("Client trying to make action on non existing pin. Ignoring command");
+        }
 	}
 
 	private String getPinType(DigitalIO digitalIO) {
@@ -205,10 +207,8 @@ public class Networking {
 		if (input.length() > 15
 				&& (input.contains("GPIO:") || input.contains("SPI:") || input.contains("I2C:") || input
 						.contains("UART:"))) {
-			System.out.println(input + " :IS embedded command");
 			return true;
 		} else {
-			System.out.println(input + " :IS NOT embedded command");
 			return false;
 		}
 	}

@@ -26,8 +26,12 @@ public class I2CManager {
             System.out.println("Accepting byte: " + value);
         }
         // TODO: 21.8.2016 Tu to padne ked neni nic pripojene - zistit exception
-        connection.writeBytes(requestBuffer);
-        System.out.println("I2C message sent succesfully. Receiving status.");
+        try {
+            connection.writeBytes(requestBuffer);
+            System.out.println("I2C message sent succesfully. Receiving status.");
+        } catch (IOException e) {
+            System.out.println(e + ": I2C bus not connected on system. Ignoring message.");
+        }
     }
 
     public String receiveI2CMessage() throws IOException {
