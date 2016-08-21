@@ -19,27 +19,31 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class Networking {
+class Networking {
+
+    private final static int SOCKET_PORT = 18924;
+    private final static int HIGH_VALUE = 1;
+    private final static int LOW_VALUE = 0;
 
     private static boolean connected = false;
-    private static final int HIGH_VALUE = 1;
-    private static final int LOW_VALUE = 0;
+
     private Board board;
     private PrintWriter out;
     private BufferedReader in;
     private RaspberryHashMap piMap;
     private ServerSocket server;
 
-    public Networking() throws IOException {
-        server = new ServerSocket(Main.SOCKET_PORT);
+    Networking() throws IOException {
+        server = new ServerSocket(SOCKET_PORT);
         board = Main.board;
         piMap = new RaspberryHashMap();
     }
 
-    public void listenSocket() {
+    void listenSocket() {
+        System.out.println("Server started.\nWaiting for response from client...\n");
         new Thread(new Runnable() {
             public void run() {
-                String input = "";
+                String input;
                 while (true) {
                     try {
                         Socket client = server.accept();
@@ -60,7 +64,6 @@ public class Networking {
                                     manageCommand(input);
                                 } else if (isRequestToSendAll(input)) {
                                     sendAllPinStatus(input);
-                                } else {
                                 }
                             }
                         }
@@ -183,24 +186,12 @@ public class Networking {
     }
 
     private boolean isRequestToSendAll(String input) {
-        if (input.length() > 20) {
-            if (input.substring(14).startsWith("REQUEST:990")) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
+        return input.length() > 20 && input.substring(14).startsWith("REQUEST:990");
     }
 
     private boolean isEmbeddedCommand(String input) {
-        if (input.length() > 15
+        return input.length() > 15
                 && (input.contains("GPIO:") || input.contains("SPI:") || input.contains("I2C:") || input
-                .contains("UART:"))) {
-            return true;
-        } else {
-            return false;
-        }
+                .contains("UART:"));
     }
 }

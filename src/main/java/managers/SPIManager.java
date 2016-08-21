@@ -47,6 +47,6 @@ public class SPIManager {
         } catch (IOException e) {
             System.out.println(e + ": SPI bus probably not connected to system. No message received.");
         }
-        return "No message received from SPI bus.";
+        return "N/A";
     }
 }
