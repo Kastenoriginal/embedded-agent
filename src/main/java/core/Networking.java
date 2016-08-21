@@ -134,48 +134,48 @@ public class Networking {
 
 	private void manageCommand(String input) {
 		RequestParser parser = new RequestParser(input);
-
-
 		String[] pinTypes = piMap.getValueByKey(Integer.valueOf(parser.getPinNumber()));
-		System.out.println("COMMAND FROM CLIENT: " + input);
-		if (parser.getPinType().equals("GPIO")) {
-			GpioManager gpio = new GpioManager();
-			int setValue =  gpio.toggleLed(board, pinTypes[0]);
-			System.out.println("Value from GPIO to pin " + parser.getPinNumber() + " set to: " + setValue);
-			out.println("Value on GPIO pin " + parser.getPinNumber() + " set to: " + setValue);
-        } else if (parser.getPinType().equals("I2C")) {
-			System.out.println("Pin type is I2C");
-			String hexAddress = parser.getValue().substring(0, 4);
-			String message = parser.getValue().substring(4);
-			System.out.println("hexa address: " + hexAddress);
-			System.out.println("message " + message);
-			I2CManager i2c = new I2CManager(board, hexAddress);
-			try {
-				i2c.sendI2CMessage(message);
-                String i2cResponse = i2c.receiveI2CMessage();
-				System.out.println("I2C value currently on bus: " + i2cResponse);
-				out.println("Value on I2C bus set to: " + i2cResponse);
-            } catch (IOException e) {
-				e.printStackTrace();
-			}
-		} else if (parser.getPinType().equals("SPI")) {
-            System.out.println("Pin type is SPI. SPI bus is not supported yet.");
-            String hexAddress = parser.getValue().substring(0, 4);
-            String message = parser.getValue().substring(4);
-            SPIManager spi = new SPIManager(board, hexAddress);
+		if (pinTypes != null) {
+			System.out.println("COMMAND FROM CLIENT: " + input);
+			if (parser.getPinType().equals("GPIO")) {
+				GpioManager gpio = new GpioManager();
+				int setValue = gpio.toggleLed(board, pinTypes[0]);
+				System.out.println("Value from GPIO to pin " + parser.getPinNumber() + " set to: " + setValue);
+				out.println("Value on GPIO pin " + parser.getPinNumber() + " set to: " + setValue);
+			} else if (parser.getPinType().equals("I2C")) {
+				System.out.println("Pin type is I2C");
+				String hexAddress = parser.getValue().substring(0, 4);
+				String message = parser.getValue().substring(4);
+				System.out.println("hexa address: " + hexAddress);
+				System.out.println("message " + message);
+				I2CManager i2c = new I2CManager(board, hexAddress);
+				try {
+					i2c.sendI2CMessage(message);
+					String i2cResponse = i2c.receiveI2CMessage();
+					System.out.println("I2C value currently on bus: " + i2cResponse);
+					out.println("Value on I2C bus set to: " + i2cResponse);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else if (parser.getPinType().equals("SPI")) {
+				System.out.println("Pin type is SPI. SPI bus is not supported yet.");
+				String hexAddress = parser.getValue().substring(0, 4);
+				String message = parser.getValue().substring(4);
+				SPIManager spi = new SPIManager(board, hexAddress);
 
-            try {
-                spi.sendSpiMessage(message);
-                String spiResponse = spi.receiveSpiMessage();
-                System.out.println("SPI value currently on bus: " + spiResponse);
-				out.println("Value on I2C bus set to: " + spiResponse);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else if (parser.getPinType().equals("UART")) {
-			System.out.println("Pin type is UART. UART bus is not supported yet.");
-		} else {
-			out.println("Command not recognized");
+				try {
+					spi.sendSpiMessage(message);
+					String spiResponse = spi.receiveSpiMessage();
+					System.out.println("SPI value currently on bus: " + spiResponse);
+					out.println("Value on I2C bus set to: " + spiResponse);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else if (parser.getPinType().equals("UART")) {
+				System.out.println("Pin type is UART. UART bus is not supported yet.");
+			} else {
+				out.println("Command not recognized");
+			}
 		}
 	}
 

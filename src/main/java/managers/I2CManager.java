@@ -25,6 +25,7 @@ public class I2CManager {
             requestBuffer[i] = Integer.decode(value).byteValue();
             System.out.println("Accepting byte: " + value);
         }
+        // TODO: 21.8.2016 Tu to padne ked neni nic pripojene - zistit exception
         connection.writeBytes(requestBuffer);
         System.out.println("I2C message sent succesfully. Receiving status.");
     }
