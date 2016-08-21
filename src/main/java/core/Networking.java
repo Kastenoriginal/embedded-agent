@@ -67,9 +67,9 @@ class Networking {
                                 }
                             }
                         }
-                        System.out.println("Client Disconnected.");
+                        System.out.println("Client disconnected.");
                     } catch (IOException e) {
-                        System.out.println("Client is unavalable. " + e);
+                        System.out.println("Client disconnected without notification.");
                         connected = false;
                     }
                 }
@@ -172,6 +172,7 @@ class Networking {
             }
         } else {
             System.out.println("Client trying to make action on non existing pin. Ignoring command");
+            out.println("Trying to access non existing pin on currently selected system.");
         }
     }
 
