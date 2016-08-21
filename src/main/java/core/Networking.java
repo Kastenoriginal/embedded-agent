@@ -54,10 +54,10 @@ class Networking {
                         while ((input = in.readLine()) != null) {
                             if (input.equals("Connect")) {
                                 connected = true;
-                                out.println("connected to server.");
+                                out.println("Server notified about client connect attempt.");
                             } else if (input.equals("Disconnect") && connected) {
                                 connected = false;
-                                out.println("disconnected from server.");
+                                out.println("Server notified about client disconnect attempt.");
                             } else if (!(input.equals("Connect") || input.equals("Disconnect")) && connected) {
                                 if (isEmbeddedCommand(input)) {
 //									sendParsedData(input);
