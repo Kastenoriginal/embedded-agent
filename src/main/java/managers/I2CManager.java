@@ -18,7 +18,7 @@ public class I2CManager {
         connection = i2c.createI2cConnection(Byte.decode(address));
     }
 
-    public void sendI2CMessage(String message) throws IOException {
+    public void sendI2CMessage(String message)  {
         byte[] requestBuffer = new byte[message.length() / 2];
         for (int i = 0; i < requestBuffer.length; i++) {
             String value = "0x" + message.substring(2 * i, 2 * (i + 1));
@@ -30,21 +30,24 @@ public class I2CManager {
             connection.writeBytes(requestBuffer);
             System.out.println("I2C message sent succesfully. Receiving status.");
         } catch (IOException e) {
-            System.out.println(e + ": I2C bus not connected on system. Ignoring message.");
+            System.out.println(e + ": I2C bus probably not connected to system. No message sent.");
         }
     }
 
-    public String receiveI2CMessage() throws IOException {
-        byte[] responseBuffer = new byte[RECEIVE_LENGTH];
-        int count = connection.readBytes(responseBuffer);
-        StringBuilder response = new StringBuilder();
-        for (int i = 0; i < count && i < RECEIVE_LENGTH; i++) {
-            response.append(Integer.toHexString(responseBuffer[i]));
+    public String receiveI2CMessage() {
+        try {
+            byte[] responseBuffer = new byte[RECEIVE_LENGTH];
+            int count = connection.readBytes(responseBuffer);
+            StringBuilder response = new StringBuilder();
+            for (int i = 0; i < count && i < RECEIVE_LENGTH; i++) {
+                response.append(Integer.toHexString(responseBuffer[i]));
+            }
+            if (response.toString().length() > 0) {
+                return response.toString();
+            }
+        } catch (IOException e) {
+            System.out.println(e + ": I2C bus probably not connected to system. No message received.");
         }
-        if (response.toString().length() > 0) {
-            return response.toString();
-        } else {
-            return "OK";
-        }
+        return "No message received from I2C bus.";
     }
 }
