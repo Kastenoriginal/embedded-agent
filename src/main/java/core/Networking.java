@@ -40,7 +40,7 @@ class Networking {
     }
 
     void listenSocket() {
-        System.out.println("Server started.\nWaiting for response from client...\n");
+        System.out.println("\nServer started.\nWaiting for response from client...\n");
         new Thread(new Runnable() {
             public void run() {
                 String input;
@@ -81,10 +81,9 @@ class Networking {
         out.print("START;");
         RequestedPinsParser pinParser = new RequestedPinsParser(input.substring(25));
         ArrayList<String> pinsToSend = pinParser.getPinsToSend();
-        System.out.println("Pins to Send to client: " + pinsToSend);
+        System.out.println("Pins to send to client: " + pinsToSend);
         if (pinsToSend != null && !pinsToSend.isEmpty()) {
             for (String pinNumberString : pinsToSend) {
-                System.out.println(!pinNumberString.isEmpty());
                 if (!pinNumberString.isEmpty()) {
                     Integer pinNumberInt = Integer.valueOf(pinNumberString);
                     if (pinNumberString.length() == 1) {
@@ -100,22 +99,22 @@ class Networking {
                         DigitalIO digitalIO = physicalPin.as(DigitalIO.class);
                         if (digitalIO.isOutputActive()) {
                             if (digitalIO.isHigh()) {
-                                System.out.println("SENDING 1");
+                                System.out.println("Sending output high value");
                                 out.print(getDateAndTime() + getPinType(digitalIO) + ":O" + pinNumberString + HIGH_VALUE + ";");
                             } else {
-                                System.out.println("SENDING 2");
+                                System.out.println("Sending output low value");
                                 out.print(getDateAndTime() + getPinType(digitalIO) + ":O" + pinNumberString + LOW_VALUE + ";");
                             }
                         } else if (digitalIO.isInputActive()) {
                             if (digitalIO.isHigh()) {
-                                System.out.println("SENDING 3");
+                                System.out.println("Sending input high value");
                                 out.print(getDateAndTime() + getPinType(digitalIO) + ":I" + pinNumberString + HIGH_VALUE + ";");
                             } else {
-                                System.out.println("SENDING 4");
+                                System.out.println("Sending input low value");
                                 out.print(getDateAndTime() + getPinType(digitalIO) + ":I" + pinNumberString + LOW_VALUE + ";");
                             }
                         } else {
-                            System.out.println("Neposlalo sa nic");
+                            System.out.println("Pin was not triggered since system is on. Nothing sent.");
                         }
                     }
 
@@ -171,8 +170,8 @@ class Networking {
                 out.println("Command not recognized");
             }
         } else {
-            System.out.println("Client trying to make action on non existing pin. Ignoring command");
-            out.println("Trying to access non existing pin on currently selected system.");
+            System.out.println("Client trying to make action on invalid pin. Ignoring command");
+            out.println("Trying to access invalid pin on currently selected system.");
         }
     }
 
