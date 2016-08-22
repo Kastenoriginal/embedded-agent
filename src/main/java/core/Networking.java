@@ -141,9 +141,23 @@ class Networking {
             System.out.println("COMMAND FROM CLIENT: " + input);
             if (parser.getPinType().equals("GPIO")) {
                 GpioManager gpio = new GpioManager();
-                int setValue = gpio.toggleLed(board, pinTypes[0]);
-                System.out.println("Value from GPIO to pin " + parser.getPinNumber() + " set to: " + setValue);
-                out.println("Value on GPIO pin " + parser.getPinNumber() + " set to: " + setValue);
+                // TODO: 23.8.2016 Na tento riadok determinovat if value is empty tak toggle else podla toho aka value - pridat aj na GUI
+                int setValue;
+                if (parser.getValue().equals("1")) {
+                    setValue = gpio.turnLedOn(board, pinTypes[0]);
+                    System.out.println("Value from GPIO to pin " + parser.getPinNumber() + " set to: " + setValue);
+                    out.println("Value on GPIO pin " + parser.getPinNumber() + " set to: " + setValue);
+                } else if (parser.getValue().equals("0")){
+                    setValue = gpio.turnLedOff(board, pinTypes[0]);
+                    System.out.println("Value from GPIO to pin " + parser.getPinNumber() + " set to: " + setValue);
+                    out.println("Value on GPIO pin " + parser.getPinNumber() + " set to: " + setValue);
+                } else if (parser.getValue().isEmpty()){
+                    setValue = gpio.toggleLed(board, pinTypes[0]);
+                    System.out.println("Value from GPIO to pin " + parser.getPinNumber() + " set to: " + setValue);
+                    out.println("Value on GPIO pin " + parser.getPinNumber() + " set to: " + setValue);
+                } else {
+                    System.out.println("Value for pin " + pinTypes[0] + " unknown.");
+                }
             } else if (parser.getPinType().equals("I2C")) {
                 System.out.println("Pin type is I2C");
                 String hexAddress = parser.getValue().substring(0, 4);
