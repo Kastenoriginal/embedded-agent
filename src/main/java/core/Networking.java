@@ -141,7 +141,6 @@ class Networking {
             System.out.println("COMMAND FROM CLIENT: " + input);
             if (parser.getPinType().equals("GPIO")) {
                 GpioManager gpio = new GpioManager();
-                // TODO: 23.8.2016 Na tento riadok determinovat if value is empty tak toggle else podla toho aka value - pridat aj na GUI
                 int setValue;
                 if (parser.getValue().equals("1")) {
                     setValue = gpio.turnLedOn(board, pinTypes[0]);
