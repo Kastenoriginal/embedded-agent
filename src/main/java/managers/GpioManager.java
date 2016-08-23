@@ -1,5 +1,7 @@
 package managers;
 
+import io.silverspoon.bulldog.core.Signal;
+import io.silverspoon.bulldog.core.gpio.DigitalInput;
 import io.silverspoon.bulldog.core.gpio.DigitalOutput;
 import io.silverspoon.bulldog.core.platform.Board;
 
@@ -37,6 +39,16 @@ public class GpioManager {
 			return 1;
 		} else {
 			output.low();
+			return 0;
+		}
+	}
+
+	public int getInputValue(Board board, String pin) {
+		DigitalInput digitalInput = board.getPin(pin).as(DigitalInput.class);
+		Signal signal = digitalInput.read();
+		if (signal.getBooleanValue()) {
+			return 1;
+		} else {
 			return 0;
 		}
 	}

@@ -107,23 +107,6 @@ class Networking {
                     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                     if (physicalPin != null) {
                         DigitalIO digitalIO = physicalPin.as(DigitalIO.class);
                         if (digitalIO.isOutputActive()) {
@@ -154,8 +137,9 @@ class Networking {
     }
 
     /**
-     *  Send information string to client about status of sent message processed by parser.
-     *  @param input received string to process.
+     * Send information string to client about status of sent message processed by parser.
+     *
+     * @param input received string to process.
      */
     private void sendParsedData(String input) {
         String separator = "|";
@@ -175,6 +159,7 @@ class Networking {
     /**
      * Manages received command by affecting pin or bus depending on received message.
      * Example of received message: 23082016194729OGPIO:07
+     *
      * @param input received string to process
      */
     private void manageCommand(String input) {
@@ -196,32 +181,13 @@ class Networking {
         }
     }
 
-    private void manageInput(RequestParser parser, String pinType) {
+    private void manageInput(RequestParser parser, String physicalPin) {
         if ("GPIO".equals(parser.getPinType())) {
             GpioManager gpio = new GpioManager();
-
-
-
-
-
-            System.out.println("VYPIS PIN TYPE: " + pinType);
-            Pin pin = board.getPin(pinType);
-            System.out.println("VYPIS PIN: " + pin);
-            DigitalInput digitalInput = pin.as(DigitalInput.class);
-            System.out.println("VYPIS DIGITAL INPUT: " + digitalInput);
-            Signal signal = digitalInput.read();
-            System.out.println("VYPIS SIGNAL: " + signal);
-            // TODO toto vrati rovno hodnotu high alebo low
-            // TODO: 23.8.2016 zistit ci bulldog z tejto metody vracia spravne hodnoty (System.out.println());
-            signal.getBooleanValue();
-            System.out.println("VYPIS SIGNAL BOOLEAN: " + signal.getBooleanValue());
+            int value = gpio.getInputValue(board, physicalPin);
+            System.out.println("Value from GPIO to pin " + parser.getPinNumber() + " set to: " + value);
+            out.println("Value on GPIO pin " + parser.getPinNumber() + " set to: " + value);
             // TODO: 23.8.2016 po vrateni poslat odpoved na pin request a zobrazit v GUI
-
-
-
-            out.println("HURA KED SI KLIKOL NA INPUT TAK SA TOTO VRATILO: " + signal.getBooleanValue() + " Z PINU: " + parser.getPinNumber());
-
-
             // TODO: 23.8.2016 na otestovanie - najprv zistit ci v GUI prisiel input string
             // TODO: 23.8.2016 potom si pytat request status v GUI a nastavovat na doske (breadboarde) High a Low
             // TODO: 23.8.2016 logicka jednotka na rovnaky kablik ako ked je LOW tak pripojit z pinu 5V (novy kablik)
@@ -230,24 +196,24 @@ class Networking {
         }
     }
 
-    private void manageOutput(RequestParser parser, String logicalPin) {
+    private void manageOutput(RequestParser parser, String physicalPin) {
         if (parser.getPinType().equals("GPIO")) {
             GpioManager gpio = new GpioManager();
             int setValue;
             if (parser.getValue().equals("1")) {
-                setValue = gpio.turnLedOn(board, logicalPin);
+                setValue = gpio.turnLedOn(board, physicalPin);
                 System.out.println("Value from GPIO to pin " + parser.getPinNumber() + " set to: " + setValue);
                 out.println("Value on GPIO pin " + parser.getPinNumber() + " set to: " + setValue);
             } else if (parser.getValue().equals("0")) {
-                setValue = gpio.turnLedOff(board, logicalPin);
+                setValue = gpio.turnLedOff(board, physicalPin);
                 System.out.println("Value from GPIO to pin " + parser.getPinNumber() + " set to: " + setValue);
                 out.println("Value on GPIO pin " + parser.getPinNumber() + " set to: " + setValue);
             } else if (parser.getValue().isEmpty()) {
-                setValue = gpio.toggleLed(board, logicalPin);
+                setValue = gpio.toggleLed(board, physicalPin);
                 System.out.println("Value from GPIO to pin " + parser.getPinNumber() + " set to: " + setValue);
                 out.println("Value on GPIO pin " + parser.getPinNumber() + " set to: " + setValue);
             } else {
-                System.out.println("Value for pin " + logicalPin + " unknown.");
+                System.out.println("Value for pin " + physicalPin + " unknown.");
             }
         } else if (parser.getPinType().equals("I2C")) {
             System.out.println("Pin type is I2C");
