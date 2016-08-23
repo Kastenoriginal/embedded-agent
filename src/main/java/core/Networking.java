@@ -7,6 +7,7 @@ import io.silverspoon.bulldog.core.gpio.DigitalInput;
 import io.silverspoon.bulldog.core.pin.Pin;
 import io.silverspoon.bulldog.core.platform.Board;
 import io.silverspoon.bulldog.raspberrypi.RaspberryPi;
+import io.silverspoon.bulldog.raspberrypi.RaspiNames;
 import managers.GpioManager;
 import managers.I2CManager;
 import managers.SPIManager;
@@ -25,8 +26,6 @@ import java.util.Calendar;
 class Networking {
 
     private final static int SOCKET_PORT = 18924;
-    private final static int HIGH_VALUE = 1;
-    private final static int LOW_VALUE = 0;
 
     private static boolean connected = false;
 
@@ -109,11 +108,9 @@ class Networking {
                         int pinValue = digitalIO.read().getNumericValue();
 
                         if (digitalIO.isOutputActive()) {
-                            System.out.println(getDateAndTime() + getPinType(digitalIO) + ":O" + pinNumberString + pinValue + ";");
-                            out.print(getDateAndTime() + getPinType(digitalIO) + ":O" + pinNumberString + pinValue + ";");
+                            out.print(getDateAndTime() + "GPIO:O" + pinNumberString + pinValue + ";");
                         } else if (digitalIO.isInputActive()) {
-                            System.out.println(getDateAndTime() + getPinType(digitalIO) + ":I" + pinNumberString + pinValue + ";");
-                            out.print(getDateAndTime() + getPinType(digitalIO) + ":I" + pinNumberString + pinValue + ";");
+                            out.print(getDateAndTime() + "GPIO:I" + pinNumberString + pinValue + ";");
                         } else {
                             System.out.println("Pin was not triggered since system is on.");
                         }
@@ -125,11 +122,6 @@ class Networking {
         }
     }
 
-    /**
-     * Send information string to client about status of sent message processed by parser.
-     *
-     * @param input received string to process.
-     */
     private void sendParsedData(String input) {
         String separator = "|";
         RequestParser parser = new RequestParser(input);
@@ -145,12 +137,6 @@ class Networking {
                 "Value:" + parser.getValue());
     }
 
-    /**
-     * Manages received command by affecting pin or bus depending on received message.
-     * Example of received message: 23082016194729OGPIO:07
-     *
-     * @param input received string to process
-     */
     private void manageCommand(String input) {
         RequestParser parser = new RequestParser(input);
         String[] pinTypes = piMap.getValueByKey(Integer.valueOf(parser.getPinNumber()));
@@ -176,10 +162,6 @@ class Networking {
             int value = gpio.getInputValue(board, physicalPin);
             System.out.println("Value from GPIO to pin " + parser.getPinNumber() + " set to: " + value);
             out.println("Value on GPIO pin " + parser.getPinNumber() + " set to: " + value);
-            // TODO: 23.8.2016 po vrateni poslat odpoved na pin request a zobrazit v GUI
-            // TODO: 23.8.2016 na otestovanie - najprv zistit ci v GUI prisiel input string
-            // TODO: 23.8.2016 potom si pytat request status v GUI a nastavovat na doske (breadboarde) High a Low
-            // TODO: 23.8.2016 logicka jednotka na rovnaky kablik ako ked je LOW tak pripojit z pinu 5V (novy kablik)
         } else {
             System.out.println("Wong pin type for input.");
         }
@@ -229,10 +211,6 @@ class Networking {
         } else {
             out.println("Command not recognized");
         }
-    }
-
-    private String getPinType(DigitalIO digitalIO) {
-        return "GPIO";
     }
 
     private String getDateAndTime() {
