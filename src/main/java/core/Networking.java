@@ -44,12 +44,10 @@ class Networking {
 
     void listenSocket() {
         System.out.println("\nServer started.\nWaiting for response from client...\n");
-
-
-        System.out.println("BOARD NAME SHOULD BE \"Raspberry Pi\": " + board.getName());
         // TODO: 23.8.2016 - Raspberry Pi
         // TODO: 23.8.2016 - BeagleBone Black
         // TODO: 23.8.2016 - Cubieboard
+        System.out.println(board.getName());
 
         new Thread(new Runnable() {
             public void run() {
@@ -106,9 +104,16 @@ class Networking {
                         }
                     }
 
-
                     if (physicalPin != null) {
                         DigitalIO digitalIO = physicalPin.as(DigitalIO.class);
+
+                        System.out.println("---------------REGARDLESS ON INPUT TYPE---------------");
+                        System.out.println("is input active: " + digitalIO.isInputActive());
+                        System.out.println("is high: " + digitalIO.isHigh());
+                        System.out.println("asi spravna metoda (read): " + digitalIO.read());
+                        System.out.println("-------------------------------------------------------");
+
+
                         if (digitalIO.isOutputActive()) {
                             if (digitalIO.isHigh()) {
                                 System.out.println("Sending output high value");
