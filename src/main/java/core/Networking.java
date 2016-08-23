@@ -109,8 +109,10 @@ class Networking {
                         int pinValue = digitalIO.read().getNumericValue();
 
                         if (digitalIO.isOutputActive()) {
+                            System.out.println(getDateAndTime() + getPinType(digitalIO) + ":O" + pinNumberString + pinValue + ";");
                             out.print(getDateAndTime() + getPinType(digitalIO) + ":O" + pinNumberString + pinValue + ";");
                         } else if (digitalIO.isInputActive()) {
+                            System.out.println(getDateAndTime() + getPinType(digitalIO) + ":I" + pinNumberString + pinValue + ";");
                             out.print(getDateAndTime() + getPinType(digitalIO) + ":I" + pinNumberString + pinValue + ";");
                         } else {
                             System.out.println("Pin was not triggered since system is on.");
