@@ -183,7 +183,7 @@ class Networking {
         if (pinTypes != null) {
             System.out.println("COMMAND FROM CLIENT: " + input);
             if ("I".equals(parser.getIoType())) {
-                manageInput(parser);
+                manageInput(parser, pinTypes[0]);
             } else if ("O".equals(parser.getIoType())) {
                 manageOutput(parser, pinTypes[0]);
             } else {
@@ -196,7 +196,7 @@ class Networking {
         }
     }
 
-    private void manageInput(RequestParser parser) {
+    private void manageInput(RequestParser parser, String pinType) {
         if ("GPIO".equals(parser.getPinType())) {
             GpioManager gpio = new GpioManager();
 
@@ -204,8 +204,8 @@ class Networking {
 
 
 
-
-            Pin pin = board.getPin(parser.getPinNumber());
+            System.out.println("VYPIS PIN TYPE: " + pinType);
+            Pin pin = board.getPin(pinType);
             System.out.println("VYPIS PIN: " + pin);
             DigitalInput digitalInput = pin.as(DigitalInput.class);
             System.out.println("VYPIS DIGITAL INPUT: " + digitalInput);
