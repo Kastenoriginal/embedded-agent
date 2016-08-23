@@ -106,32 +106,14 @@ class Networking {
 
                     if (physicalPin != null) {
                         DigitalIO digitalIO = physicalPin.as(DigitalIO.class);
-
-                        System.out.println("---------------REGARDLESS ON INPUT TYPE---------------");
-                        System.out.println("is input active: " + digitalIO.isInputActive());
-                        System.out.println("is high: " + digitalIO.isHigh());
-                        System.out.println("asi spravna metoda (read): " + digitalIO.read());
-                        System.out.println("-------------------------------------------------------");
-
+                        int pinValue = digitalIO.read().getNumericValue();
 
                         if (digitalIO.isOutputActive()) {
-                            if (digitalIO.isHigh()) {
-                                System.out.println("Sending output high value");
-                                out.print(getDateAndTime() + getPinType(digitalIO) + ":O" + pinNumberString + HIGH_VALUE + ";");
-                            } else {
-                                System.out.println("Sending output low value");
-                                out.print(getDateAndTime() + getPinType(digitalIO) + ":O" + pinNumberString + LOW_VALUE + ";");
-                            }
+                            out.print(getDateAndTime() + getPinType(digitalIO) + ":O" + pinNumberString + pinValue + ";");
                         } else if (digitalIO.isInputActive()) {
-                            if (digitalIO.isHigh()) {
-                                System.out.println("Sending input high value");
-                                out.print(getDateAndTime() + getPinType(digitalIO) + ":I" + pinNumberString + HIGH_VALUE + ";");
-                            } else {
-                                System.out.println("Sending input low value");
-                                out.print(getDateAndTime() + getPinType(digitalIO) + ":I" + pinNumberString + LOW_VALUE + ";");
-                            }
+                            out.print(getDateAndTime() + getPinType(digitalIO) + ":I" + pinNumberString + pinValue + ";");
                         } else {
-                            System.out.println("Pin was not triggered since system is on. Nothing sent.");
+                            System.out.println("Pin was not triggered since system is on.");
                         }
                     }
 
