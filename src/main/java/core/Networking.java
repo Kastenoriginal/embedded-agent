@@ -1,9 +1,12 @@
 package core;
 
 import hashmaps.RaspberryHashMap;
+import io.silverspoon.bulldog.core.Signal;
 import io.silverspoon.bulldog.core.gpio.DigitalIO;
+import io.silverspoon.bulldog.core.gpio.DigitalInput;
 import io.silverspoon.bulldog.core.pin.Pin;
 import io.silverspoon.bulldog.core.platform.Board;
+import io.silverspoon.bulldog.raspberrypi.RaspberryPi;
 import managers.GpioManager;
 import managers.I2CManager;
 import managers.SPIManager;
@@ -41,6 +44,13 @@ class Networking {
 
     void listenSocket() {
         System.out.println("\nServer started.\nWaiting for response from client...\n");
+
+
+        System.out.println("BOARD NAME SHOULD BE \"Raspberry Pi\": " + board.getName());
+        // TODO: 23.8.2016 - Raspberry Pi
+        // TODO: 23.8.2016 - BeagleBone Black
+        // TODO: 23.8.2016 - Cubieboard
+
         new Thread(new Runnable() {
             public void run() {
                 String input;
@@ -85,7 +95,7 @@ class Networking {
         if (pinsToSend != null && !pinsToSend.isEmpty()) {
             for (String pinNumberString : pinsToSend) {
                 if (!pinNumberString.isEmpty()) {
-                    Integer pinNumberInt = Integer.valueOf(pinNumberString);
+                    int pinNumberInt = Integer.valueOf(pinNumberString);
                     if (pinNumberString.length() == 1) {
                         pinNumberString = "0" + pinNumberString;
                     }
@@ -95,6 +105,25 @@ class Networking {
                             physicalPin = p;
                         }
                     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     if (physicalPin != null) {
                         DigitalIO digitalIO = physicalPin.as(DigitalIO.class);
                         if (digitalIO.isOutputActive()) {
@@ -124,67 +153,126 @@ class Networking {
         }
     }
 
+    /**
+     *  Send information string to client about status of sent message processed by parser.
+     *  @param input received string to process.
+     */
     private void sendParsedData(String input) {
         String separator = "|";
         RequestParser parser = new RequestParser(input);
-        out.println("Day:" + parser.getDay() + separator + "Month:" + parser.getMonth() + separator + "Year:"
-                + parser.getYear() + separator + "Hour:" + parser.getHour() + separator + "Minute:"
-                + parser.getMinute() + separator + "Second:" + parser.getSecond() + separator + "I/O Type:"
-                + parser.getIoType() + separator + "Pin Type:" + parser.getPinType() + separator + "Pin Number:"
-                + parser.getPinNumber() + separator + "Value:" + parser.getValue());
+        out.println("Day:" + parser.getDay() + separator +
+                "Month:" + parser.getMonth() + separator +
+                "Year:" + parser.getYear() + separator +
+                "Hour:" + parser.getHour() + separator +
+                "Minute:" + parser.getMinute() + separator +
+                "Second:" + parser.getSecond() + separator +
+                "I/O Type:" + parser.getIoType() + separator +
+                "Pin Type:" + parser.getPinType() + separator +
+                "Pin Number:" + parser.getPinNumber() + separator +
+                "Value:" + parser.getValue());
     }
 
+    /**
+     * Manages received command by affecting pin or bus depending on received message.
+     * Example of received message: 23082016194729OGPIO:07
+     * @param input received string to process
+     */
     private void manageCommand(String input) {
         RequestParser parser = new RequestParser(input);
         String[] pinTypes = piMap.getValueByKey(Integer.valueOf(parser.getPinNumber()));
         if (pinTypes != null) {
             System.out.println("COMMAND FROM CLIENT: " + input);
-            if (parser.getPinType().equals("GPIO")) {
-                GpioManager gpio = new GpioManager();
-                int setValue;
-                if (parser.getValue().equals("1")) {
-                    setValue = gpio.turnLedOn(board, pinTypes[0]);
-                    System.out.println("Value from GPIO to pin " + parser.getPinNumber() + " set to: " + setValue);
-                    out.println("Value on GPIO pin " + parser.getPinNumber() + " set to: " + setValue);
-                } else if (parser.getValue().equals("0")){
-                    setValue = gpio.turnLedOff(board, pinTypes[0]);
-                    System.out.println("Value from GPIO to pin " + parser.getPinNumber() + " set to: " + setValue);
-                    out.println("Value on GPIO pin " + parser.getPinNumber() + " set to: " + setValue);
-                } else if (parser.getValue().isEmpty()){
-                    setValue = gpio.toggleLed(board, pinTypes[0]);
-                    System.out.println("Value from GPIO to pin " + parser.getPinNumber() + " set to: " + setValue);
-                    out.println("Value on GPIO pin " + parser.getPinNumber() + " set to: " + setValue);
-                } else {
-                    System.out.println("Value for pin " + pinTypes[0] + " unknown.");
-                }
-            } else if (parser.getPinType().equals("I2C")) {
-                System.out.println("Pin type is I2C");
-                String hexAddress = parser.getValue().substring(0, 4);
-                String message = parser.getValue().substring(4);
-                System.out.println("hexa address: " + hexAddress);
-                System.out.println("message " + message);
-                I2CManager i2c = new I2CManager(board, hexAddress);
-                i2c.sendI2CMessage(message);
-                String i2cResponse = i2c.receiveI2CMessage();
-                System.out.println("I2C value currently on bus: " + i2cResponse);
-                out.println("Value on I2C bus set to: " + i2cResponse);
-            } else if (parser.getPinType().equals("SPI")) {
-                System.out.println("Pin type is SPI. SPI bus is not supported yet.");
-                String hexAddress = parser.getValue().substring(0, 4);
-                String message = parser.getValue().substring(4);
-                SPIManager spi = new SPIManager(board, hexAddress);
-                spi.sendSpiMessage(message);
-                String spiResponse = spi.receiveSpiMessage();
-                System.out.println("SPI value currently on bus: " + spiResponse);
-                out.println("Value on I2C bus set to: " + spiResponse);
-            } else if (parser.getPinType().equals("UART")) {
-                System.out.println("Pin type is UART. UART bus is not supported yet.");
+            if ("I".equals(parser.getIoType())) {
+                manageInput(parser);
+            } else if ("O".equals(parser.getIoType())) {
+                manageOutput(parser, pinTypes[0]);
             } else {
-                out.println("Command not recognized");
+                System.out.println("Client trying to make action on invalid I/O type. Ignoring command.");
+                out.println("Trying to make action on invalid I/O type.");
             }
         } else {
-            System.out.println("Client trying to make action on invalid pin. Ignoring command");
+            System.out.println("Client trying to make action on invalid pin. Ignoring command.");
             out.println("Trying to access invalid pin on currently selected system.");
+        }
+    }
+
+    private void manageInput(RequestParser parser) {
+        if ("GPIO".equals(parser.getPinType())) {
+            GpioManager gpio = new GpioManager();
+
+
+
+
+
+
+            Pin pin = board.getPin(parser.getPinNumber());
+            System.out.println("VYPIS PIN: " + pin);
+            DigitalInput digitalInput = pin.as(DigitalInput.class);
+            System.out.println("VYPIS DIGITAL INPUT: " + digitalInput);
+            Signal signal = digitalInput.read();
+            System.out.println("VYPIS SIGNAL: " + signal);
+            // TODO toto vrati rovno hodnotu high alebo low
+            // TODO: 23.8.2016 zistit ci bulldog z tejto metody vracia spravne hodnoty (System.out.println());
+            signal.getBooleanValue();
+            System.out.println("VYPIS SIGNAL BOOLEAN: " + signal.getBooleanValue());
+            // TODO: 23.8.2016 po vrateni poslat odpoved na pin request a zobrazit v GUI
+
+
+
+            out.println("HURA KED SI KLIKOL NA INPUT TAK SA TOTO VRATILO: " + signal.getBooleanValue() + " Z PINU: " + parser.getPinNumber());
+
+
+            // TODO: 23.8.2016 na otestovanie - najprv zistit ci v GUI prisiel input string
+            // TODO: 23.8.2016 potom si pytat request status v GUI a nastavovat na doske (breadboarde) High a Low
+            // TODO: 23.8.2016 logicka jednotka na rovnaky kablik ako ked je LOW tak pripojit z pinu 5V (novy kablik)
+        } else {
+            System.out.println("Wong pin type for input.");
+        }
+    }
+
+    private void manageOutput(RequestParser parser, String logicalPin) {
+        if (parser.getPinType().equals("GPIO")) {
+            GpioManager gpio = new GpioManager();
+            int setValue;
+            if (parser.getValue().equals("1")) {
+                setValue = gpio.turnLedOn(board, logicalPin);
+                System.out.println("Value from GPIO to pin " + parser.getPinNumber() + " set to: " + setValue);
+                out.println("Value on GPIO pin " + parser.getPinNumber() + " set to: " + setValue);
+            } else if (parser.getValue().equals("0")) {
+                setValue = gpio.turnLedOff(board, logicalPin);
+                System.out.println("Value from GPIO to pin " + parser.getPinNumber() + " set to: " + setValue);
+                out.println("Value on GPIO pin " + parser.getPinNumber() + " set to: " + setValue);
+            } else if (parser.getValue().isEmpty()) {
+                setValue = gpio.toggleLed(board, logicalPin);
+                System.out.println("Value from GPIO to pin " + parser.getPinNumber() + " set to: " + setValue);
+                out.println("Value on GPIO pin " + parser.getPinNumber() + " set to: " + setValue);
+            } else {
+                System.out.println("Value for pin " + logicalPin + " unknown.");
+            }
+        } else if (parser.getPinType().equals("I2C")) {
+            System.out.println("Pin type is I2C");
+            String hexAddress = parser.getValue().substring(0, 4);
+            String message = parser.getValue().substring(4);
+            System.out.println("hexa address: " + hexAddress);
+            System.out.println("message " + message);
+            I2CManager i2c = new I2CManager(board, hexAddress);
+            i2c.sendI2CMessage(message);
+            String i2cResponse = i2c.receiveI2CMessage();
+            System.out.println("I2C value currently on bus: " + i2cResponse);
+            out.println("Value on I2C bus set to: " + i2cResponse);
+        } else if (parser.getPinType().equals("SPI")) {
+            System.out.println("Pin type is SPI. SPI bus is not supported yet.");
+            String hexAddress = parser.getValue().substring(0, 4);
+            String message = parser.getValue().substring(4);
+            SPIManager spi = new SPIManager(board, hexAddress);
+            spi.sendSpiMessage(message);
+            String spiResponse = spi.receiveSpiMessage();
+            System.out.println("SPI value currently on bus: " + spiResponse);
+            out.println("Value on I2C bus set to: " + spiResponse);
+        } else if (parser.getPinType().equals("UART")) {
+            System.out.println("Pin type is UART. UART bus is not supported yet.");
+        } else {
+            out.println("Command not recognized");
         }
     }
 
