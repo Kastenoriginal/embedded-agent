@@ -90,7 +90,7 @@ public class Networking {
                                         } else if (isRequestToSendAll(input)) {
                                             sendAllPinStatus(input);
                                         } else {
-                                            System.out.println(Information.UNKNOWN_COMMAND);
+                                            System.out.println(Information.UNKNOWN_COMMAND + ": " + input);
                                         }
                                         break;
                                 }
