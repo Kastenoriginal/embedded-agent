@@ -49,6 +49,7 @@ public class I2cManager {
             }
         } catch (IOException e) {
             System.out.println(e + Networking.I2C + Information.BUS_NOT_SUPPORTED_OR_DISABLED);
+            return Response.INVALID_RESPONSE;
         }
         return Response.INVALID_RESPONSE;
     }

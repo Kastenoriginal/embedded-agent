@@ -49,6 +49,7 @@ public class SPIManager {
             }
         } catch (IOException e) {
             System.out.println(e + Networking.SPI + Information.BUS_NOT_SUPPORTED_OR_DISABLED);
+            return Response.INVALID_RESPONSE;
         }
         return Response.INVALID_RESPONSE;
     }
