@@ -20,4 +20,5 @@ public class Information {
     public static final String BUS_MESSAGE_WROTE_SUCCESSFULLY = " message wrote successfully. Receiving status.";
     public static final String BUS_NOT_SUPPORTED_OR_DISABLED = " bus not supported in system, or is disabled. No message sent.";
     public static final String CANNOT_WRITE_MESSAGE_ON_BUS = "Failed to write message on bus.";
+    public static final String CANNOT_READ_MESSAGE_FROM_BUS = "Failed to read message from bus.";
 }

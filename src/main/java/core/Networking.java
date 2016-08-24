@@ -6,7 +6,7 @@ import io.silverspoon.bulldog.core.pin.Pin;
 import io.silverspoon.bulldog.core.platform.Board;
 import managers.GpioManager;
 import managers.I2cManager;
-import managers.SPIManager;
+import managers.SpiManager;
 import strings.Command;
 import strings.Information;
 import strings.Response;
@@ -223,7 +223,7 @@ public class Networking {
             case SPI: {
                 String hexAddress = parser.getValue().substring(0, 4);
                 String message = parser.getValue().substring(4);
-                SPIManager spi = new SPIManager(board, hexAddress);
+                SpiManager spi = new SpiManager(board, hexAddress);
                 spi.sendSpiMessage(message);
                 String spiResponse = spi.receiveSpiMessage();
                 System.out.println(Information.SPI_ON_BUS + spiResponse);

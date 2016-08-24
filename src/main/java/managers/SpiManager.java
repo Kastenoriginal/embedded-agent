@@ -8,14 +8,14 @@ import strings.Response;
 
 import java.io.IOException;
 
-public class SPIManager {
+public class SpiManager {
 
     private static final int RECEIVE_LENGTH = 40;
     private static final String ADDRESS_PREFIX = "0x";
 
     private SpiConnection connection;
 
-    public SPIManager(Board board, String address) {
+    public SpiManager(Board board, String address) {
         connection = board.getSpiBuses().get(0).createSpiConnection(Byte.decode(address));
     }
 
@@ -30,9 +30,9 @@ public class SPIManager {
             connection.writeBytes(requestBuffer);
             System.out.println(Networking.SPI + Information.BUS_MESSAGE_WROTE_SUCCESSFULLY);
         } catch (IOException e) {
-            System.out.println(e + Networking.SPI + Information.BUS_NOT_SUPPORTED_OR_DISABLED);
+            System.out.println(Networking.SPI + Information.BUS_NOT_SUPPORTED_OR_DISABLED);
         } catch (NullPointerException e) {
-            System.out.println(e + Information.CANNOT_WRITE_MESSAGE_ON_BUS);
+            System.out.println(Information.CANNOT_WRITE_MESSAGE_ON_BUS);
         }
     }
 
@@ -48,7 +48,10 @@ public class SPIManager {
                 return response.toString();
             }
         } catch (IOException e) {
-            System.out.println(e + Networking.SPI + Information.BUS_NOT_SUPPORTED_OR_DISABLED);
+            System.out.println(Networking.SPI + Information.BUS_NOT_SUPPORTED_OR_DISABLED);
+            return Response.INVALID_RESPONSE;
+        } catch (NullPointerException e) {
+            System.out.println(Information.CANNOT_WRITE_MESSAGE_ON_BUS);
             return Response.INVALID_RESPONSE;
         }
         return Response.INVALID_RESPONSE;

@@ -30,9 +30,9 @@ public class I2cManager {
             connection.writeBytes(requestBuffer);
             System.out.println(Networking.I2C + Information.BUS_MESSAGE_WROTE_SUCCESSFULLY);
         } catch (IOException e) {
-            System.out.println(e + Networking.I2C + Information.BUS_NOT_SUPPORTED_OR_DISABLED);
+            System.out.println(Networking.I2C + Information.BUS_NOT_SUPPORTED_OR_DISABLED);
         } catch (NullPointerException e) {
-            System.out.println(e + Information.CANNOT_WRITE_MESSAGE_ON_BUS);
+            System.out.println(Information.CANNOT_WRITE_MESSAGE_ON_BUS);
         }
     }
 
@@ -48,7 +48,10 @@ public class I2cManager {
                 return response.toString();
             }
         } catch (IOException e) {
-            System.out.println(e + Networking.I2C + Information.BUS_NOT_SUPPORTED_OR_DISABLED);
+            System.out.println(Networking.I2C + Information.BUS_NOT_SUPPORTED_OR_DISABLED);
+            return Response.INVALID_RESPONSE;
+        } catch (NullPointerException e) {
+            System.out.println(Information.CANNOT_WRITE_MESSAGE_ON_BUS);
             return Response.INVALID_RESPONSE;
         }
         return Response.INVALID_RESPONSE;
