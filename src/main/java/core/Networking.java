@@ -72,6 +72,8 @@ class Networking {
                                 } else if (isRequestToSendAll(input)) {
                                     sendAllPinStatus(input);
                                 }
+                            } else if (input.equals("Alive?")) {
+                                out.println("Yes");
                             }
                         }
                         System.out.println("Client disconnected.");
