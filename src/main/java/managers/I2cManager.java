@@ -1,25 +1,25 @@
 package managers;
 
 import core.Networking;
-import io.silverspoon.bulldog.core.io.bus.spi.SpiConnection;
+import io.silverspoon.bulldog.core.io.bus.i2c.I2cConnection;
 import io.silverspoon.bulldog.core.platform.Board;
 import strings.Information;
 import strings.Response;
 
 import java.io.IOException;
 
-public class SPIManager {
+public class I2cManager {
 
     private static final int RECEIVE_LENGTH = 40;
     private static final String ADDRESS_PREFIX = "0x";
 
-    private SpiConnection connection;
+    private I2cConnection connection;
 
-    public SPIManager(Board board, String address) {
-        connection = board.getSpiBuses().get(0).createSpiConnection(Byte.decode(address));
+    public I2cManager(Board board, String address) {
+        connection = board.getI2cBuses().get(0).createI2cConnection(Byte.decode(address));
     }
 
-    public void sendSpiMessage(String message) {
+    public void sendI2cMessage(String message) {
         byte[] requestBuffer = new byte[message.length() / 2];
         for (int i = 0; i < requestBuffer.length; i++) {
             String value = ADDRESS_PREFIX + message.substring(2 * i, 2 * (i + 1));
@@ -28,13 +28,13 @@ public class SPIManager {
         }
         try {
             connection.writeBytes(requestBuffer);
-            System.out.println(Networking.SPI + Information.BUS_MESSAGE_WROTE_SUCCESSFULLY);
+            System.out.println(Networking.I2C + Information.BUS_MESSAGE_WROTE_SUCCESSFULLY);
         } catch (IOException e) {
-            System.out.println(e + Networking.SPI + Information.BUS_NOT_SUPPORTED_OR_DISABLED);
+            System.out.println(e + Networking.I2C + Information.BUS_NOT_SUPPORTED_OR_DISABLED);
         }
     }
 
-    public String receiveSpiMessage() {
+    public String receiveI2cMessage() {
         try {
             byte[] responseBuffer = new byte[RECEIVE_LENGTH];
             int count = connection.readBytes(responseBuffer);
@@ -46,7 +46,7 @@ public class SPIManager {
                 return response.toString();
             }
         } catch (IOException e) {
-            System.out.println(e + Networking.SPI + Information.BUS_NOT_SUPPORTED_OR_DISABLED);
+            System.out.println(e + Networking.I2C + Information.BUS_NOT_SUPPORTED_OR_DISABLED);
         }
         return Response.INVALID_RESPONSE;
     }
