@@ -65,6 +65,8 @@ class Networking {
                             } else if (input.equals("Disconnect") && connected) {
                                 connected = false;
                                 out.println("Server notified about client disconnect attempt.");
+                            } else if (input.equals("Alive?")) {
+                                out.println("Yes");
                             } else if (!(input.equals("Connect") || input.equals("Disconnect")) && connected) {
                                 if (isEmbeddedCommand(input)) {
 //									sendParsedData(input);
@@ -72,8 +74,6 @@ class Networking {
                                 } else if (isRequestToSendAll(input)) {
                                     sendAllPinStatus(input);
                                 }
-                            } else if (input.equals("Alive?")) {
-                                out.println("Yes");
                             }
                         }
                         System.out.println("Client disconnected.");
