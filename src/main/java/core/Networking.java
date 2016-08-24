@@ -72,8 +72,10 @@ public class Networking {
                                     case Command.CONNECT:
                                         out.println(Response.CONNECT);
                                         connected = true;
+                                        break;
                                     default:
-                                        System.out.println(Information.CLIENT_NOT_CONNECTED);
+                                        System.out.println(Information.CLIENT_NOT_CONNECTED + input);
+                                        break;
                                 }
                             } else {
                                 switch (input) {
@@ -90,7 +92,7 @@ public class Networking {
                                         } else if (isRequestToSendAll(input)) {
                                             sendAllPinStatus(input);
                                         } else {
-                                            System.out.println(Information.UNKNOWN_COMMAND + ": " + input);
+                                            System.out.println(Information.UNKNOWN_COMMAND + input);
                                         }
                                         break;
                                 }

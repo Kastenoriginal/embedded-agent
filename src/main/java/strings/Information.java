@@ -3,8 +3,8 @@ package strings;
 public class Information {
     public static final String SERVER_STARTED = "\nServer started.\nWaiting for response from client...\n";
     public static final String CLIENT_CONNECTED = "Client connected.";
-    public static final String CLIENT_NOT_CONNECTED = "Client sent invalid connection command.";
-    public static final String UNKNOWN_COMMAND = "Received unknown command from client.";
+    public static final String CLIENT_NOT_CONNECTED = "Client sent invalid connection command: ";
+    public static final String UNKNOWN_COMMAND = "Received unknown command from client: ";
     public static final String CLIENT_DISCONNECTED_AND_NOTIFIED = "Client has disconnected from server.";
     public static final String CLIENT_DISCONNECTED_NO_NOTIFICATION = "Client disconnected without notification.";
     public static final String PIN_NOT_TRIGGERED = "Pin was not triggered since system is on.";
