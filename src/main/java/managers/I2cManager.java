@@ -31,6 +31,8 @@ public class I2cManager {
             System.out.println(Networking.I2C + Information.BUS_MESSAGE_WROTE_SUCCESSFULLY);
         } catch (IOException e) {
             System.out.println(e + Networking.I2C + Information.BUS_NOT_SUPPORTED_OR_DISABLED);
+        } catch (NullPointerException e) {
+            System.out.println(e + Information.CANNOT_WRITE_MESSAGE_ON_BUS);
         }
     }
 
