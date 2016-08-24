@@ -16,7 +16,8 @@ public class Information {
     public static final String I2C_ON_BUS = "I2C value currently on bus: ";
     public static final String SPI_ON_BUS = "SPI value currently on bus: ";
     public static final String UART_NOT_SUPPORTED = "Pin type is UART. UART bus is not supported yet.";
-    public static final String ACCEPTING_BYTE = "Accepting byte: ";
+    public static final String BUS_ADDRESS = "Bus address: ";
+    public static final String ACCEPTING_MESSAGE = "Accepting message: ";
     public static final String BUS_MESSAGE_WROTE_SUCCESSFULLY = " message wrote successfully. Receiving status.";
     public static final String BUS_NOT_SUPPORTED_OR_DISABLED = " bus not supported in system, or is disabled. No message sent.";
     public static final String CANNOT_WRITE_MESSAGE_ON_BUS = "Failed to write message on bus.";

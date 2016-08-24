@@ -52,9 +52,10 @@ public class Networking {
 
     void listenSocket() {
         System.out.println(Information.SERVER_STARTED);
-        // TODO: 23.8.2016 - Raspberry Pi
-        // TODO: 23.8.2016 - BeagleBone Black
-        // TODO: 23.8.2016 - Cubieboard
+        // Exactly names for boards are:
+        // Raspberry Pi
+        // BeagleBone Black
+        // Cubieboard
         System.out.println(board.getName() + "\n");
 
         new Thread(new Runnable() {
